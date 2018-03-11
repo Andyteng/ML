@@ -60,7 +60,20 @@ end
             fprintf('with error number: %i', err_num)
             disp('all unlabeled data were labeled.')
     
-    %%
+    %% TSVM
+    % form the optimization problem
+Cl = 10000;     % set C
+Cu = 0.5;
+cvx_begin
+    variables w(dim) xi(n) b        % optim variables
+    minimize( 0.5 * (w' * w) + Cl * sum(xi)+Cu*sum(xi))      % objective
+    subject to 
+    labels_train .* (X_train * w + b) -1 + xi >= 0;   % constraints
+    labels_Utrain.* (X_Utrain*w+b) -1 + xi >= 0;
+    xi >= 0;
+cvx_end
+            
+            %%
 %     train_diag = diag(train_l*train_l');
 %     unlabel_diag = diag(train_u*train_u');
 %     
