@@ -18,7 +18,7 @@ end
 
 % unlabeled dataset
     u_num = [0,10,20,40,80,160,320,640];
-    index = randperm(size(magic04,1),25);
+    index = randperm(size(magic04,1),25);un
     train_l = X(index,:);
     train_lab = g(index);
     class1_index = find([train_lab{:}] == 'g');
