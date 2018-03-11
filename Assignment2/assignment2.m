@@ -72,6 +72,7 @@ cvx_begin
     labels_Utrain.* (X_Utrain*w+b) -1 + xi >= 0;
     xi >= 0;
 cvx_end
+% add
             
             %%
 %     train_diag = diag(train_l*train_l');
