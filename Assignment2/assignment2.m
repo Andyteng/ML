@@ -18,7 +18,7 @@ end
 
 % unlabeled dataset
     u_num = [0,10,20,40,80,160,320,640];
-    index = randperm(size(magic04,1),25);
+    index = randperm(size(magic04,1),25);un
     train_l = X(index,:);
     train_lab = g(index);
     class1_index = find([train_lab{:}] == 'g');
@@ -33,7 +33,8 @@ end
     index_u = randperm(size(index_u,2),u_num(2));
     label_u = g(index_u);
     train_u = X(index_u,:);
-    
+  
+    %% TSVM
     %% ML_estimate
     err_num = 0;
     while size(train_u,1) ~= 0
