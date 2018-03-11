@@ -33,7 +33,8 @@ end
     index_u = randperm(size(index_u,2),u_num(2));
     label_u = g(index_u);
     train_u = X(index_u,:);
-    
+  
+    %% TSVM
     %% ML_estimate
     err_num = 0;
     while size(train_u,1) ~= 0
