@@ -17,13 +17,15 @@ end
 X_dataset = prdataset(X,labels);
 
 %% basic LDA testing
+u_num = [0,10,20,40,80,160,320,640,1280];
 [X_labeled, rest] = gendata_split(25,X_dataset); 
-X = X_labeled;
+[X_unlabeled,rrest] = gendata_split(u_num(3),rest);
+X = [X_labeled; X_unlabeled];
 [mean0, mean1, sigma,prior0] = llda(X,25, 500);
-[e, ll] = llda_predict(rest,mean0,mean1,sigma,prior0);
+[e, ll] = llda_predict(rrest,mean0,mean1,sigma,prior0);
 
 %%
-repeats = 50;
+repeats = 10;
 e_history = zeros(9,repeats);
 LL = zeros(9,repeats);
 e_history1 = zeros(9,repeats);
@@ -39,17 +41,15 @@ for j=1:repeats
         [e,ll]= lda_predict(X_test,mean0,mean1,sigma,prior0);
         e_history(i,j) = e; 
         LL(i,j) = ll;
+%         [mean0, mean1, sigma,prior0] = lda(X, 150+2*unlabeled(i), 300);
+%         [e,ll]= lda_predict(X_test,mean0,mean1,sigma,prior0);
+%         e_history1(i,j) = e; 
+%         LL1(i,j) = ll;
     end
 end
 plot(u_num,mean(e_history,2));
-legend('expected error rates')
-ylabel('averaged error(50 experiments)');
-xlabel('num. of added unlabeled samples');
 figure;
 plot(u_num,mean(LL,2));
-legend('log likelihood')
-ylabel('averaged loglikelihood(50 experiments)');
-xlabel('num. of added unlabeled samples');
 
 %% EM
 
