@@ -1,11 +1,41 @@
 %% using CVX solver 
+clc
+clear all
+%% Load the MAGIC Gamma Telescope Data Set
+load magic04.mat ; %Load input data file
+load labels.mat;
+index_g = find([g{:}] == 'g');
+index_h = find([g{:}] == 'h');
+labels = zeros(size(magic04,1),1);
+labels(index_g) = 1;
+labels(index_h) = -1;
+X = ones(size(magic04,1),10);
+for i = 1:10
+    X(:,i) = magic04(:,i)./std(magic04(:,i)); 
+end
+X_dataset = prdataset(X,labels);
+
+%% SVM initialization
+% get useful info
+Cl = 10000;     % set C
+Cu = 1;
+u_num = [0, 10, 20, 40, 80, 160, 320, 640, 1280]; 
+[X_labeled, rest] = gendata_split(50,X_dataset); 
+[X_unlabeled,X_test] = gendata_split(u_num(7),rest);
+X_train = X_labeled.data;
+labels_train = X_labeled.labels;
+labels_test = X_unlabeled.labels;
+X_test = X_unlabeled.data;
 % load data
-load('linear_svm.mat');
+%load('linear_svm.mat');
 % get useful info
 [n, dim] = size(X_train);
-
+[m, dim_u] = size(X_unlabeled);
+% unlabeled dataset
+X_dataset = prdataset(X_test,labels_test);
+[X_unlabel, rest] = gendata_split(320,X_dataset);
 %form the optimization problem
-% C = 10;     % set C
+% C = 0.1;     % set C
 % cvx_begin
 %     variables w(dim) xi(n) b        % optim variables
 %     minimize( 0.5 * (w' * w) + C * sum(xi))      % objective
@@ -13,14 +43,18 @@ load('linear_svm.mat');
 %     labels_train .* (X_train * w + b) -1 + xi >= 0;   % constraints
 %     xi >= 0;
 % cvx_end
-Cl = 1;
-Cu = 0;
-l = 100;
-X = prdataset(X_train, labels_train);
-[w,xi,b] = SVM_S(X,Cl,Cu,l);
 
-y_hat = sign(X_test*w+b);
 
+Cl = 10000;     % set C
+Cu = 4000;
+cvx_begin
+    variables w(dim) xi(n+m) b        % optim variables
+    minimize( 0.5 * (w' * w) + Cl * sum(xi(1:n))+Cu * sum(xi(n+1:end)))      % objective
+    subject to 
+    labels_train .* (X_train * w + b) -1 + xi(1:n) >= 0;   % constraints
+    X_unlabeled.labels.*(X_unlabeled.data*w + b) - 1 + xi(n+1:end) >= 0;
+    xi >= 0;
+cvx_end
 
 %% Visualization of SVM classifier
 class1 = X_train(labels_train==1,:);        % 
@@ -49,9 +83,9 @@ predicted_label = sign( X_test * w + b);
 sum(predicted_label == labels_test) / 900
 
 %% low-complexity algorithm
-w0 = randn(2,1);
+w0 = randn(size(X_train,2),1);
 b0 = randn(1);
-C = 10;
+C = 10000;
 lambda = 1/(2*C);
 w = w0;
 b = b0;
@@ -59,7 +93,8 @@ b = b0;
 T = 2000;
 alpha = 0.006;
 best_loss = 1000;
-
+labels_train = X_labeled.labels;
+X_train = X_labeled.data;
 t0 = cputime;
 for i = 1: T
     % compute loss and (sub)gradient

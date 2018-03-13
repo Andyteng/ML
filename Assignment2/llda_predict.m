@@ -14,6 +14,6 @@ p1 = mvnpdf(X, mean1, sigma)+eps(0);
 pred_label = [(1-prior0)*p1 > prior0*p0];
 error = sum(abs(pred_label - label))/size(X,1);
 %logL = sum(log(prior0 .* p0 + (1 - prior0) .* p1));
-logL = -sum(log(mvnpdf(X(label==0,:), mean0, sigma)+eps(0)))-sum(log(mvnpdf(X(label==1,:), mean1, sigma)+eps(0)));
+logL = sum(log(mvnpdf(X(label==0,:), mean0, sigma)+eps(0)))+sum(log(mvnpdf(X(label==1,:), mean1, sigma)+eps(0)));
 %logL
 end
