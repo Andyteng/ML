@@ -56,9 +56,18 @@ cvx_begin
     xi >= 0;
 cvx_end
 
+
+%%
+a = gendatd([50,50],2,4);
+scatterd(a); axis('equal');
+figure;
+a = gendatb([100,100]); scatterd(a);
+a = gendats([100,100]); scatterd(a);
+%% Exercise 3.3
+
 %% Visualization of SVM classifier
-class1 = X_train(labels_train==1,:);        % 
-class2 = X_train(labels_train==-1,:);
+class1 = X_train(labels_train==1);        % 
+class2 = X_train(labels_train==2);
 figure;
 plot(class1(:,1),class1(:,2), '+r');
 hold on

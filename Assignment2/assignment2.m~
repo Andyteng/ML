@@ -39,6 +39,10 @@ for i=1:repeat
             w = svc(X_labeled,'p',1);
             y_hat = X_dataset*w*labeld;
             e_history_svm(j,i) = sum(X_dataset.labels~=y_hat)/size(X_dataset.data,1);
+            
+            X_pre = prdataset(X_dataset.data,y_hat);
+            ll_svm = ll(X_pre);
+            LL_svm(j,i) = ll_svm;
         else
             [X_unlabeled,X_test] = gendata_split(u_num(j),rest);
             [w,xi,b] = SVM_S(X_labeled,X_unlabeled,Cl,Cu);
@@ -113,12 +117,12 @@ plot(u_num,mean(e_history,2))
 hold on
 plot(u_num,mean(e_history_svm,2))
 hold off
-legend('EM','TSVM');
+legend('GM','TSVM');
 ylabel('averaged error(50 experiments)');
 xlabel('num. of added unlabeled samples');
 figure;
 plot(u_num,mean(LL,2))
-legend('log likelihood')
+legend('TSVM')
 ylabel('averaged loglikelihood(50 experiments)');
 xlabel('num. of added unlabeled samples');
 

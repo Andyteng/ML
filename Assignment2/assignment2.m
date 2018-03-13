@@ -117,12 +117,12 @@ plot(u_num,mean(e_history,2))
 hold on
 plot(u_num,mean(e_history_svm,2))
 hold off
-legend('EM','TSVM');
+legend('GM','TSVM');
 ylabel('averaged error(50 experiments)');
 xlabel('num. of added unlabeled samples');
 figure;
 plot(u_num,mean(LL,2))
-legend('log likelihood')
+legend('TSVM')
 ylabel('averaged loglikelihood(50 experiments)');
 xlabel('num. of added unlabeled samples');
 
