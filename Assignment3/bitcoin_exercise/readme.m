@@ -23,7 +23,7 @@ load coin_data;
 % you can visualize the coindata as follows
 
 figure
-plot(s)
+plot(r)
 legend(symbols_str)
 title('worth of coins')
 xlabel('date')

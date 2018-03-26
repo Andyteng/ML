@@ -1,0 +1,10 @@
+function [L] = L_AA4(a,r,i,t)
+
+temp_L = 0;
+
+for s = 1:t
+    temp_L = temp_L + mix_loss(a,r);
+end
+
+L = temp_L;
+

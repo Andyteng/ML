@@ -31,17 +31,16 @@ for t = 1:size(s,1)
 end
 % compute losses of experts
 %%% your code here %%%
-loss_fixed = sum(min(-log(r),[],2));
-
-
+loss_fixed = sum(-log(r));
 % compute regret
 %%% your code here %%%
 % Expect regret
-ER = sum(loss)-loss_fixed;
+ER = sum(-log(diag(p*r')))-L_min;
+
 
 % compute total gain of investing with strategy p_t
 %%% your code here %%%
-gain = exp(-sum(-log(diag(p*r'))));
+gain = exp^(-sum(-log(diag(p*r'))));
 %% plot of the strategy p and the coin data
 
 % if you store the strategy in the matrix p (size n * d)
